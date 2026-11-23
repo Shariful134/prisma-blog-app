@@ -20,6 +20,7 @@ model Post {
   thumbnail  String?
   isFeatured Boolean    @default(false)
   status     PostStatus @default(PUBLISHED)
+  tags       String[]
   views      Int        @default(0)
   authorId   String
   createdAt  DateTime   @default(now())

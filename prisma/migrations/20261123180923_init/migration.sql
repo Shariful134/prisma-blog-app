@@ -12,10 +12,12 @@ CREATE TABLE "posts" (
     "thumbnail" TEXT,
     "isFeatured" BOOLEAN NOT NULL DEFAULT false,
     "status" "PostStatus" NOT NULL DEFAULT 'PUBLISHED',
+    "tags" TEXT[],
     "views" INTEGER NOT NULL DEFAULT 0,
     "authorId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+
     CONSTRAINT "posts_pkey" PRIMARY KEY ("id")
 );
 
@@ -30,22 +32,21 @@ CREATE TABLE "comments" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "commentId" TEXT,
+
     CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE INDEX "posts_authorId_idx" ON "posts" ("authorId");
+CREATE INDEX "posts_authorId_idx" ON "posts"("authorId");
 
 -- CreateIndex
-CREATE INDEX "comments_authorId_idx" ON "comments" ("authorId");
+CREATE INDEX "comments_authorId_idx" ON "comments"("authorId");
 
 -- CreateIndex
-CREATE INDEX "comments_postId_idx" ON "comments" ("postId");
+CREATE INDEX "comments_postId_idx" ON "comments"("postId");
 
 -- AddForeignKey
-ALTER TABLE "comments"
-ADD CONSTRAINT "comments_postId_fkey" FOREIGN KEY ("postId") REFERENCES "posts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "comments" ADD CONSTRAINT "comments_postId_fkey" FOREIGN KEY ("postId") REFERENCES "posts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "comments"
-ADD CONSTRAINT "comments_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "comments" ("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "comments" ADD CONSTRAINT "comments_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "comments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
