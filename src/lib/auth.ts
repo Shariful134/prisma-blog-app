@@ -43,13 +43,15 @@ export const auth = betterAuth({
     requireEmailVerification: true,
   },
   emailVerification: {
+    sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      const verificationURL = `${process.env.APP_URL}/verify-email?token=${token}`;
-      const info = await transporter.sendMail({
-        from: '"Shariful_Prisma_Blog" <shariful.prisma@gmail.com>', // sender address
-        to: user.email, // list of recipients
-        subject: 'Verify Your Email - Shariful Prisma Blog', // subject line
-        text: `
+      try {
+        const verificationURL = `${process.env.APP_URL}/verify-email?token=${token}`;
+        const info = await transporter.sendMail({
+          from: '"Shariful_Prisma_Blog" <shariful.prisma@gmail.com>', // sender address
+          to: user.email, // list of recipients
+          subject: 'Verify Your Email - Shariful Prisma Blog', // subject line
+          text: `
 Hello ${user.name},
 
 Thank you for joining Shariful Prisma Blog!
@@ -60,8 +62,8 @@ ${url}
 
 If you didn't create an account, please ignore this email.
       `,
-        // plain text body
-        html: `
+          // plain text body
+          html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -104,7 +106,7 @@ If you didn't create an account, please ignore this email.
     </p>
 
     <p style="word-break:break-all; font-size:12px;">
-      <a href="${verificationURL}">${verificationURL}</a>
+      <a href="${url}">${url}</a>
     </p>
 
     <hr style="border:none; border-top:1px solid #eee;">
@@ -121,9 +123,20 @@ If you didn't create an account, please ignore this email.
 </body>
 </html>
       `,
-      });
+        });
 
-      console.log('Message sent: %s', info.messageId);
+        console.log('Message sent: %s', info.messageId);
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    },
+  },
+
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
 });
